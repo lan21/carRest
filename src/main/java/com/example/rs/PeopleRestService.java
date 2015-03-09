@@ -23,7 +23,7 @@ import com.example.services.PeopleService;
 
 @Path( "/people" ) 
 /**
- * what the f**k is this class used for?
+ * 
  * @author me
  *
  */

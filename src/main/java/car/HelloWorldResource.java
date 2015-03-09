@@ -10,7 +10,7 @@ import javax.ws.rs.QueryParam;
 /**
  * Exemple de ressource REST accessible a l'adresse :
  * 
- * 		http://localhost:8080/rest/api/helloworld
+ * 		http://localhost:8080/ftp/api/helloworld
  * 
  * @author Lionel Seinturier <Lionel.Seinturier@univ-lille1.fr>
  */

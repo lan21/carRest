@@ -1,6 +1,7 @@
 package com.example.config;
 
 import java.util.ArrayList;
+import com.example.services.FTPService;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import car.HelloWorldResource;
-import car.ListFileResource;
 
+import com.example.rs.FTPRestService;
 import com.example.rs.JaxRsApiApplication;
 import com.example.rs.PeopleRestService;
 import com.example.services.PeopleService;
@@ -35,7 +36,7 @@ public class AppConfig {
 		List<Object> serviceBeans = new ArrayList<Object>();
 		serviceBeans.add(peopleRestService());
 		serviceBeans.add(new HelloWorldResource());
-		serviceBeans.add(new ListFileResource());
+		serviceBeans.add(FTPRestService());
 		
 		factory.setServiceBeans(serviceBeans);
 		factory.setAddress( "/" + factory.getAddress() );
@@ -56,6 +57,16 @@ public class AppConfig {
 	@Bean 
 	public PeopleService peopleService() {
 		return new PeopleService();
+	}
+	
+	@Bean 
+	public FTPRestService FTPRestService() {
+		return new FTPRestService();
+	}
+	
+	@Bean
+	public FTPService FTPService() {
+		return new FTPService();
 	}
 		
 	@Bean
