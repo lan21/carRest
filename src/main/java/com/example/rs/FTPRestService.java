@@ -9,37 +9,38 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.apache.commons.net.ftp.FTPFile;
 
 import com.example.services.FTPService;
 
 /**
  * sert à executer les requêtes REST avec les verbes HTTP
  * @author Allan Rakotoarivony, Tanguy Maréchal
- * accessible à l'adresse: http://localhost:8080/ftp/api/dir
+ * accessible à l'adresse: http://localhost:8080/ftp/api/home
  *
  */
-@Path("/dir")
+@Path("/home/")
 public class FTPRestService {
 	@Inject private  FTPService ftpService;
 	
-	@GET
-	@Produces({MediaType.APPLICATION_JSON})
-	public FTPFile[] listRootJSON() {
-		try {
-			return ftpService.listDirectoryJSON();
-		} catch (SocketException e) {
-			return null;
-		}
-		catch (IOException e) {
-			return null;
-		}
-	}
+//	@GET
+//	@Produces({MediaType.APPLICATION_JSON})
+//	public FTPFile[] listRootJSON() {
+//		try {
+//			return ftpService.listDirectoryJSON();
+//		} catch (SocketException e) {
+//			return null;
+//		}
+//		catch (IOException e) {
+//			return null;
+//		}
+//	}
 	
 	@GET
-	@Produces("text/html")
-	public String listRoot() {
+	@Produces({MediaType.TEXT_HTML})
+	public Response listRoot() {
+		System.out.println("FTPRestService.listRoot()");
 		try {
 			return ftpService.listDirectory();
 		} catch (SocketException e) {
@@ -47,24 +48,42 @@ public class FTPRestService {
 		} catch (IOException e) {
 			
 		}
-		return "<h2>Error in getting root</h2>";
+		return Response.status(Response.Status.NOT_FOUND).entity("Racine non trouvé").build();
 	}
 	
 
 	@GET
-	@Produces("text/html")
+	@Produces({MediaType.TEXT_HTML})
 	/**
 	 * 
 	 * @return a formatted HTML which represents the files in this directory
 	 */
-	@Path("/{dirname: .*}") //il y a un regex là :D
-	public String listDirectory( @PathParam("dirname") String dirname){
+	@Path("/{dirname: .*?/}") //il y a un regex là :D
+	public Response listDirectory( @PathParam("dirname") String dirname){
 		try {
 			return ftpService.listDirectory(dirname);
 		} catch (SocketException e) {
 		} catch (IOException e) {
 		}
-		return "<h2>Cannot access to directory</h2>";
+		return Response.status(Response.Status.NOT_FOUND).entity("dossier "+dirname+" non trouvé").build();
+	}
+	
+	@GET
+	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	/**
+	 * 
+	 * @return a formatted HTML which represents the files in this directory
+	 */
+	@Path("/{dirname: .*}download/{filename: .*}") //il y a un regex là :D
+	public Response getFile( @PathParam("dirname") String dirname ,@PathParam("filename") String filename){
+		try {
+			if(dirname == null)dirname = "";
+			if(filename == null)filename = "";
+			return ftpService.getFile(dirname+filename);
+		} catch (SocketException e) {
+		} catch (IOException e) {
+		}
+		return Response.status(Response.Status.NOT_FOUND).entity("fichier "+filename+" non trouvé").build();
 	}
 	
 }

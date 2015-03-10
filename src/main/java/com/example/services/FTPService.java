@@ -1,7 +1,11 @@
 package com.example.services;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -24,6 +28,10 @@ public class FTPService {
 	private String password = "allan";
 	
 	private static final String server = "localhost";
+	/**
+	 * directory separator
+	 */
+	private static final String DS = "/";
 	
 	/**
 	 * connects to an ftp and list all directories on the root of the ftp in 
@@ -32,9 +40,7 @@ public class FTPService {
 	 * @throws IOException
 	 */
 	public FTPFile[] listDirectoryJSON() throws SocketException, IOException{
-		FTPClient client = new FTPClient(); //faut-il créer un nouveau client FTP à chaque requête? ou un seul et le mettre en attribut de cette classe
-		client.connect(server,2121);
-		client.login(username,password);
+		FTPClient client = connectToFTP();
 		FTPFile[] files = client.listFiles();
 		client.disconnect();
 		return files;
@@ -46,7 +52,7 @@ public class FTPService {
 	 * @throws SocketException
 	 * @throws IOException
 	 */
-	public String listDirectory() throws SocketException, IOException{
+	public Response listDirectory() throws SocketException, IOException{
 		return listDirectory(null);
 	}
 	
@@ -57,14 +63,18 @@ public class FTPService {
 	 * @throws SocketException
 	 * @throws IOException
 	 */
-	public String listDirectory(String pathname) throws SocketException, IOException{
+	public Response listDirectory(String pathname) throws SocketException, IOException{
 		//System.out.println("requested path is "+pathname);
-		FTPClient client = new FTPClient();
-		client.connect(server,2121);
-		client.login(username,password);
+		FTPClient client = connectToFTP();
 		FTPFile[] files;
+		boolean directoryFound = true;
 		if(pathname != null){
-			client.changeWorkingDirectory(pathname);
+			directoryFound = client.changeWorkingDirectory(pathname);
+		}
+		if(!directoryFound){
+			System.out.println("Directory not found");
+			client.disconnect();
+			return Response.status(Response.Status.NOT_FOUND).entity("directory "+pathname+" not found<br>\n").build();
 		}
 		files = client.listFiles();
 		
@@ -75,33 +85,72 @@ public class FTPService {
 			}
 			else{
 
-				listFile = listFile + file.getName() +"<br/>";
+				listFile = listFile + formatFileNameHTML(file.getName(),client.printWorkingDirectory()) +"<br/>";
 			}
 		}
 		client.disconnect();
-		return listFile;
+		return Response.ok(listFile,MediaType.TEXT_HTML).build();
 	}
 	
 	/**
-	 * add a link on folder name so it beome accessible by navigation
+	 * add a link on folder name so it becomes accessible by navigation
 	 * @param folderName
 	 * @return
 	 */
 	private String formatFolderNameHTML(String folderName,String workingDirectoryName){
+		System.out.println("wdn:"+workingDirectoryName);
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
-		if(!"/".equals(workingDirectoryName)){
-			intoHTML += workingDirectoryName.substring(1)+"/";
-		}
-		else{
-			intoHTML += "dir/";
-		}
-		intoHTML += folderName+"\">";
-		intoHTML += folderName;
+		intoHTML += folderName+DS+"\">";
+		intoHTML += folderName+DS;
 		intoHTML += "</a>";
 		return intoHTML;
 	}
 	
-	//Il faut aussi ajouter une méthode pour foramtter les fichiers en HTML
+	/**
+	 * add a link on a file name so it becomes accessible by navigation
+	 * @param fileName
+	 * @return
+	 */
+	private String formatFileNameHTML(String fileName,String workingDirectoryName){
+		String intoHTML = "";
+		intoHTML += "<a href=\"";
+		intoHTML += "download"+DS;
+		intoHTML += fileName+"\">";
+		intoHTML += fileName;
+		intoHTML += "</a>";
+		return intoHTML;
+	}
+
+	/**
+	 * return the requested file as a stream
+	 * @param folderName
+	 * @return a response corresponding to the 
+	 * @throws IOException 
+	 */
+	public Response getFile(String filename) throws IOException {
+		System.out.println("requested file is "+filename);
+		FTPClient client = connectToFTP();
+		Response response;
+		InputStream is = client.retrieveFileStream(filename);
+		//il faut traiter si c'est un dossier
+		if(is == null){
+			System.out.println("not found");
+			response = Response.status(Response.Status.NOT_FOUND).entity("file "+filename+" not found<br>").build();
+		}else{
+			response = Response.ok(is, MediaType.APPLICATION_OCTET_STREAM).build();
+		}		
+		client.disconnect();
+		return response;
+	}
+	
+	
+	public FTPClient connectToFTP() throws IOException{
+		FTPClient client = new FTPClient(); 
+		client.connect(server,2121);
+		client.login(username,password);
+		return client;
+	}
+	
 
 }
