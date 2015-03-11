@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 
 import com.example.services.FTPService;
 
@@ -37,6 +37,10 @@ public class FTPRestService {
 //		}
 //	}
 	
+	/**
+	 * list all files in the root directory in HTML format
+	 * @return HTML text
+	 */
 	@GET
 	@Produces({MediaType.TEXT_HTML})
 	public Response listRoot() {
@@ -72,9 +76,10 @@ public class FTPRestService {
 	@Produces({MediaType.APPLICATION_OCTET_STREAM})
 	/**
 	 * 
-	 * @return a formatted HTML which represents the files in this directory
+	 * @return a Response which contains the HTTP code answer
+	 * formatted HTML which represents the files in this directory
 	 */
-	@Path("/{dirname: .*}download/{filename: .*}") //il y a un regex là :D
+	@Path("/{dirname: .*}file/{filename: .*}") //il y a un regex là :D
 	public Response getFile( @PathParam("dirname") String dirname ,@PathParam("filename") String filename){
 		try {
 			if(dirname == null)dirname = "";
@@ -84,6 +89,18 @@ public class FTPRestService {
 		} catch (IOException e) {
 		}
 		return Response.status(Response.Status.NOT_FOUND).entity("fichier "+filename+" non trouvé").build();
+	}
+	
+	@DELETE
+	@Path("/{dirname: .*}file/{filename: .*}")
+	public Response deleteFile(@PathParam("dirname") String dirname ,@PathParam("filename") String filename){
+		try {
+			if(dirname == null)dirname = "";
+			if(filename == null)filename = "";
+			return ftpService.deleteFile(dirname+filename);
+		} catch (IOException e) {
+		}
+		return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 	}
 	
 }

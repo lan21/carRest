@@ -115,7 +115,7 @@ public class FTPService {
 	private String formatFileNameHTML(String fileName,String workingDirectoryName){
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
-		intoHTML += "download"+DS;
+		intoHTML += "file"+DS;
 		intoHTML += fileName+"\">";
 		intoHTML += fileName;
 		intoHTML += "</a>";
@@ -150,6 +150,24 @@ public class FTPService {
 		client.connect(server,2121);
 		client.login(username,password);
 		return client;
+	}
+
+	/**
+	 * delete a file on the distant FTP
+	 * @param filename is the name of the file to delete
+	 * @return
+	 * @throws IOException 
+	 */
+	public Response deleteFile(String filename) throws IOException {
+		FTPClient client = connectToFTP();
+		Response response;
+		if(client.deleteFile(filename)){
+			response = Response.ok(filename+" has been deleted successfully").build();
+		}
+		else{
+			response = Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Unable to delete file "+filename).build();
+		}
+		return response;
 	}
 	
 
