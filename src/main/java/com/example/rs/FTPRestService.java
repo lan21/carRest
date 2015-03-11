@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -26,6 +25,7 @@ import com.example.services.FTPService;
 @Path("/home")
 public class FTPRestService {
 	@Inject private  FTPService ftpService;
+	//private  FTPService ftpService = new FTPService(); //pour les tests
 	
 //	@GET
 //	@Produces({MediaType.APPLICATION_JSON})
@@ -109,7 +109,6 @@ public class FTPRestService {
 	
 	@POST
 	@Path("/{dirname: .*/}")
-	@Consumes()
 	@Produces({MediaType.TEXT_HTML})
 	public Response postFile(@FormParam("link") String link){
 		System.out.println(link);
