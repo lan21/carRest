@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,7 +23,7 @@ import com.example.services.FTPService;
  * accessible à l'adresse: http://localhost:8080/ftp/api/home
  *
  */
-@Path("/home/")
+@Path("/home")
 public class FTPRestService {
 	@Inject private  FTPService ftpService;
 	
@@ -46,7 +49,7 @@ public class FTPRestService {
 	public Response listRoot() {
 		System.out.println("FTPRestService.listRoot()");
 		try {
-			return ftpService.listDirectory();
+			return ftpService.listRootDirectory();
 		} catch (SocketException e) {
 			
 		} catch (IOException e) {
@@ -55,14 +58,13 @@ public class FTPRestService {
 		return Response.status(Response.Status.NOT_FOUND).entity("Racine non trouvé").build();
 	}
 	
-
-	@GET
-	@Produces({MediaType.TEXT_HTML})
 	/**
 	 * 
 	 * @return a formatted HTML which represents the files in this directory
 	 */
-	@Path("/{dirname: .*?/}") //il y a un regex là :D
+	@GET
+	@Produces({MediaType.TEXT_HTML})
+	@Path("/{dirname: .*/}")
 	public Response listDirectory( @PathParam("dirname") String dirname){
 		try {
 			return ftpService.listDirectory(dirname);
@@ -71,6 +73,8 @@ public class FTPRestService {
 		}
 		return Response.status(Response.Status.NOT_FOUND).entity("dossier "+dirname+" non trouvé").build();
 	}
+	
+	
 	
 	@GET
 	@Produces({MediaType.APPLICATION_OCTET_STREAM})
@@ -101,6 +105,15 @@ public class FTPRestService {
 		} catch (IOException e) {
 		}
 		return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
+	}
+	
+	@POST
+	@Path("/{dirname: .*/}")
+	@Consumes()
+	@Produces({MediaType.TEXT_HTML})
+	public Response postFile(@FormParam("link") String link){
+		System.out.println(link);
+		return Response.ok(link,MediaType.TEXT_HTML).build();
 	}
 	
 }

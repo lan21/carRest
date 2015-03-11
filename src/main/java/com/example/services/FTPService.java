@@ -52,8 +52,8 @@ public class FTPService {
 	 * @throws SocketException
 	 * @throws IOException
 	 */
-	public Response listDirectory() throws SocketException, IOException{
-		return listDirectory(null);
+	public Response listRootDirectory() throws SocketException, IOException{
+		return listDirectory("/");
 	}
 	
 	/**
@@ -81,11 +81,11 @@ public class FTPService {
 		String listFile = "";
 		for (FTPFile file : files){
 			if(file.isDirectory()){
-				listFile = listFile + formatFolderNameHTML(file.getName(),client.printWorkingDirectory()) +"<br/>";
+				listFile = listFile + formatFolderNameHTML(file.getName(),pathname) +"<br/>";
 			}
 			else{
 
-				listFile = listFile + formatFileNameHTML(file.getName(),client.printWorkingDirectory()) +"<br/>";
+				listFile = listFile + formatFileNameHTML(file.getName(),pathname) +"<br/>";
 			}
 		}
 		client.disconnect();
@@ -98,9 +98,15 @@ public class FTPService {
 	 * @return
 	 */
 	private String formatFolderNameHTML(String folderName,String workingDirectoryName){
-		System.out.println("wdn:"+workingDirectoryName);
+		System.out.println("pwd:"+workingDirectoryName);
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
+		if(workingDirectoryName.equals("/")){
+			intoHTML += "home/";
+		}
+		else if(!workingDirectoryName.endsWith("/")){
+			intoHTML += workingDirectoryName+"/";
+		}
 		intoHTML += folderName+DS+"\">";
 		intoHTML += folderName+DS;
 		intoHTML += "</a>";
@@ -115,6 +121,12 @@ public class FTPService {
 	private String formatFileNameHTML(String fileName,String workingDirectoryName){
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
+		if(workingDirectoryName.equals("")){
+			intoHTML += "home/";
+		}
+		else if(!workingDirectoryName.endsWith("/")){
+			intoHTML += workingDirectoryName+"/";
+		}
 		intoHTML += "file"+DS;
 		intoHTML += fileName+"\">";
 		intoHTML += fileName;
