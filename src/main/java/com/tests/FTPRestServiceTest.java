@@ -27,7 +27,7 @@ public class FTPRestServiceTest {
 	public void testListDirectory() {
 		System.out.println("youpi");
 		System.out.println("entite "+service.listRoot());
-		String textReturned = "<a href=\"dossier/\">dossier/</a><br/><a href=\"file/blai.txt\">blai.txt</a><br/><a href=\"file/Fiche-dinscription_Sport_Co_RNS2015_vf.xls\">Fiche-dinscription_Sport_Co_RNS2015_vf.xls</a><br/>";
+		String textReturned = "<a href=\"home/dossier/\">dossier/</a><br/><a href=\"file/blai.txt\">blai.txt</a><br/><a href=\"file/Fiche-dinscription_Sport_Co_RNS2015_vf.xls\">Fiche-dinscription_Sport_Co_RNS2015_vf.xls</a><br/>";
 		assertNotNull(service);
 		
 		assertEquals(textReturned, service.listDirectory("/").getEntity().toString());
