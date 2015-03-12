@@ -31,3 +31,4 @@ Lionel Seinturier.
 
 
 [1] http://aredko.blogspot.fr/2013/01/going-rest-embedding-jetty-with-spring.html
+
