@@ -1,9 +1,12 @@
 package com.example.rs;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -13,6 +16,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import com.example.services.FTPService;
 
@@ -109,10 +114,13 @@ public class FTPRestService {
 	
 	@POST
 	@Path("/{dirname: .*/}")
-	@Produces({MediaType.TEXT_HTML})
-	public Response postFile(@FormParam("link") String link){
-		System.out.println(link);
-		return Response.ok(link,MediaType.TEXT_HTML).build();
+	@Produces({MediaType.TEXT_HTML})	
+	public Response postFile(@Multipart("link") InputStream link,@PathParam("dirname") String dirname){
+		try {
+			return ftpService.upload(dirname,link);
+		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
+		}
 	}
 	
 }
