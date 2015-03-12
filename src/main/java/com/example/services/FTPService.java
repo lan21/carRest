@@ -181,6 +181,34 @@ public class FTPService {
 		}
 		return response;
 	}
+
+	/**
+	 * upload the file 
+	 * @param dirname
+	 * @param link
+	 * @return
+	 * @throws IOException 
+	 */
+	public Response upload(String dirname, InputStream fileInputStream) throws IOException {
+		FTPClient client = connectToFTP();
+		boolean directoryFound = true;
+		if(dirname != null){
+			directoryFound = client.changeWorkingDirectory(dirname);
+		}
+		if(!directoryFound){
+			client.disconnect();
+			return Response.status(Response.Status.NOT_FOUND).entity("directory "+dirname+" not found<br>\n").build();
+		}
+		Response response;
+		String filename = "fileUploaded";
+		if(client.storeFile(filename, fileInputStream)){
+			response = Response.status(Response.Status.CREATED).build();
+		}
+		else{
+			response = Response.status(Response.Status.FORBIDDEN).build();
+		}
+		return response;
+	}
 	
 
 }
