@@ -29,8 +29,8 @@ import com.example.services.FTPService;
  */
 @Path("/home")
 public class FTPRestService {
-	//@Inject private  FTPService ftpService;
-	private  FTPService ftpService = new FTPService(); //pour les tests
+	@Inject private  FTPService ftpService;
+	//private  FTPService ftpService = new FTPService(); //pour les tests
 	
 //	@GET
 //	@Produces({MediaType.APPLICATION_JSON})
