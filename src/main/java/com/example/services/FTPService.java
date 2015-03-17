@@ -7,6 +7,7 @@ import java.net.SocketException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.stereotype.Service;
@@ -102,7 +103,7 @@ public class FTPService {
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		if(workingDirectoryName.equals("/")){
-			intoHTML += "home/";
+			intoHTML += "home"+DS;
 		}
 		else if(!workingDirectoryName.endsWith("/")){
 			intoHTML += workingDirectoryName+"/";
@@ -121,8 +122,8 @@ public class FTPService {
 	private String formatFileNameHTML(String fileName,String workingDirectoryName){
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
-		if(workingDirectoryName.equals("")){
-			intoHTML += "home/";
+		if(workingDirectoryName.equals("/")){
+			intoHTML += "home"+DS;
 		}
 		else if(!workingDirectoryName.endsWith("/")){
 			intoHTML += workingDirectoryName+"/";
@@ -144,6 +145,7 @@ public class FTPService {
 		System.out.println("requested file is "+filename);
 		FTPClient client = connectToFTP();
 		Response response;
+		client.setFileType(FTP.BINARY_FILE_TYPE);
 		InputStream is = client.retrieveFileStream(filename);
 		//il faut traiter si c'est un dossier
 		if(is == null){

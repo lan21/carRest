@@ -1,6 +1,5 @@
 package com.example.rs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
@@ -8,7 +7,6 @@ import java.net.SocketException;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.net.ftp.FTPFile;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 
 import com.example.services.FTPService;
@@ -32,18 +31,19 @@ public class FTPRestService {
 	@Inject private  FTPService ftpService;
 	//private  FTPService ftpService = new FTPService(); //pour les tests
 	
-//	@GET
-//	@Produces({MediaType.APPLICATION_JSON})
-//	public FTPFile[] listRootJSON() {
-//		try {
-//			return ftpService.listDirectoryJSON();
-//		} catch (SocketException e) {
-//			return null;
-//		}
-//		catch (IOException e) {
-//			return null;
-//		}
-//	}
+	@GET 	
+	@Produces({MediaType.APPLICATION_JSON})
+	public FTPFile[] listRootJSON() {
+		System.out.println("FTPRestService.listRootJSON()");
+		try {
+			return ftpService.listDirectoryJSON();
+		} catch (SocketException e) {
+			return null;
+		}
+		catch (IOException e) {
+			return null;
+		}
+	}
 	
 	/**
 	 * list all files in the root directory in HTML format
@@ -114,8 +114,9 @@ public class FTPRestService {
 	
 	@POST
 	@Path("/{dirname: .*/}")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	@Produces({MediaType.TEXT_HTML})	
-	public Response postFile(@Multipart("link") InputStream link,@PathParam("dirname") String dirname){
+	public Response postFile(MultipartFormDataInput input){
 		try {
 			return ftpService.upload(dirname,link);
 		} catch (IOException e) {
