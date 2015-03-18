@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import com.example.services.FTPService;
 
@@ -116,9 +117,11 @@ public class FTPRestService {
 	@Path("/{dirname: .*/}")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	@Produces({MediaType.TEXT_HTML})	
-	public Response postFile(MultipartFormDataInput input){
+	public Response postFile(@PathParam("dirname") String dirname,@Multipart("file") MultipartBody file){
 		try {
-			return ftpService.upload(dirname,link);
+			String filename = file.getRootAttachment().getDataHandler().getName();
+			InputStream fileStream = file.getRootAttachment().getDataHandler().getInputStream();
+			return ftpService.upload(dirname,fileStream,filename);
 		} catch (IOException e) {
 			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		}

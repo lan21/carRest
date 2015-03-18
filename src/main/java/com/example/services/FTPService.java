@@ -191,7 +191,7 @@ public class FTPService {
 	 * @return
 	 * @throws IOException 
 	 */
-	public Response upload(String dirname, InputStream fileInputStream) throws IOException {
+	public Response upload(String dirname, InputStream fileInputStream, String filename) throws IOException {
 		FTPClient client = connectToFTP();
 		boolean directoryFound = true;
 		if(dirname != null){
@@ -202,7 +202,6 @@ public class FTPService {
 			return Response.status(Response.Status.NOT_FOUND).entity("directory "+dirname+" not found<br>\n").build();
 		}
 		Response response;
-		String filename = "fileUploaded";
 		if(client.storeFile(filename, fileInputStream)){
 			response = Response.status(Response.Status.CREATED).build();
 		}
