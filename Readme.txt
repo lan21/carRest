@@ -12,7 +12,11 @@ L'application implémente les commandes LIST, RETRIEVE, PUT et DELETE
 
 Les url sont les suivantes :
 LIST : http://localhost:8080/ftp/api/home/ => liste la racine
-       http://localhost:8080/ftp	
+       http://localhost:8080/ftp/api/home/dossier/ =>	liste le contenu du dossier
+
+Une fois la liste afficher, un clic sur un fichier lance le download
+
+Un formulaire permet le dépot ou la suppression d'un fichier sur le serveur
 
 *** 2/ Architecture
 
@@ -20,6 +24,7 @@ Classe FTPService
 Classe FTPRestService
 Classe Starter
 Classe AppConfig
+Classe HtmlGenerator
 
 Catch:
 try {
