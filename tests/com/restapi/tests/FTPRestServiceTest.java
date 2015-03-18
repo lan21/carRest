@@ -27,7 +27,7 @@ public class FTPRestServiceTest {
 		String textReturned = "<a href=\"home/dossier/\">dossier/</a><br/><a href=\"file/blai.txt\">blai.txt</a><br/><a href=\"file/Fiche-dinscription_Sport_Co_RNS2015_vf.xls\">Fiche-dinscription_Sport_Co_RNS2015_vf.xls</a><br/>";
 		HttpClient client = HttpClientBuilder.create().build();
 
-		FTPRestService s = new FTPRestService();
+		//FTPRestService s = new FTPRestService();
 
 		HttpGet request = new HttpGet("http://localhost:8080/rest/api/home/");
 		HttpResponse response = client.execute(request);
@@ -60,7 +60,7 @@ public class FTPRestServiceTest {
 	public void testGetFile() throws ClientProtocolException, IOException {
 
 		HttpClient client = HttpClientBuilder.create().build();
-		FTPRestService s = new FTPRestService();
+		//FTPRestService s = new FTPRestService();
 
 		HttpGet request = new HttpGet("http://localhost:8080/rest/api/home/dossier/file/blai.txt");
 		HttpResponse response = client.execute(request);
@@ -71,6 +71,7 @@ public class FTPRestServiceTest {
 		
 
 		assertEquals(refBuf.readLine(), getBuf.readLine());
+		refBuf.close();
 	}
 
 	@Test
@@ -85,7 +86,7 @@ public class FTPRestServiceTest {
 		 * verify with an assert that the directory contains the file
 		 * */
 		HttpClient client = HttpClientBuilder.create().build();
-		FTPRestService s = new FTPRestService();
+//		FTPRestService s = new FTPRestService();
 		/*retrieve the file*/
 		HttpGet request = new HttpGet("http://localhost:8080/rest/api/home/dossier/file/TestPostAndDelete.txt");
 		HttpResponse response = client.execute(request);

@@ -25,15 +25,7 @@ public class HTMLGenerator {
 			intoHTML += "..";
 		}
 		else{
-			if("/".equals(workingDirectoryName)){
-				intoHTML += HOME;
-			}
-			else if(!workingDirectoryName.endsWith("/")){
-				intoHTML += HOME+workingDirectoryName+"/";
-			}
-			else{
-				intoHTML += HOME+workingDirectoryName;
-			}			
+			intoHTML += getAbsolutePath(workingDirectoryName);		
 			intoHTML += folderName+DS+"\">";
 			intoHTML += folderName+DS;
 		}
@@ -50,15 +42,7 @@ public class HTMLGenerator {
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		System.out.println("wdn=" + workingDirectoryName);
-		if("/".equals(workingDirectoryName)){
-			intoHTML += HOME;
-		}
-		else if(!workingDirectoryName.endsWith("/")){
-			intoHTML += HOME+workingDirectoryName+"/";
-		}
-		else{
-			intoHTML += HOME+workingDirectoryName;
-		}
+		intoHTML += getAbsolutePath(workingDirectoryName);
 		intoHTML += "file"+DS;
 		intoHTML += fileName+"\">";
 		intoHTML += fileName;
@@ -101,23 +85,21 @@ public class HTMLGenerator {
 	public String HTMLPage(FTPFile[] files,String pathname){
 		String HTML = "";
 		HTML+="<html><body>";
+		HTML += "<h1>Index of "+pathname+"</h1>";
 		HTML += formatFiles(files, pathname);
 		HTML += createUploadForm(pathname);
 		HTML+="</body></html>";		
 		return HTML;
 	}
 	
+	/**
+	 * creates a form to upload a file in the pathname directory
+	 * @param pathname path of the directory where the uploaded file will be added
+	 * @return
+	 */
 	public String createUploadForm(String pathname) {
 		String uploadform="<form action =\"";
-		if("/".equals(pathname)){
-			uploadform += HOME;
-		}
-		else if(!pathname.endsWith("/")){
-			uploadform += HOME+pathname+"/";
-		}
-		else{
-			uploadform += HOME+pathname;
-		}
+		uploadform += getAbsolutePath(pathname);
 		uploadform += "\" method=\"post\" enctype=\"multipart/form-data\">";
 		uploadform += "<input type=\"file\" name=\"file\"/>";
 		uploadform += "<input type=\"submit\" value=\"Upload file\" />";
@@ -125,12 +107,22 @@ public class HTMLGenerator {
 		return uploadform;
 	}
 
-	public String getParentPath(String pathname){
+	private String getParentPath(String pathname){
 		String parent="";
 		String[] pathIntoArray = pathname.split("/");
 		for (int i = 0; i < pathIntoArray.length-1; i++) {
 			parent = pathIntoArray[i]+"/";			
 		}
 		return parent;
+	}
+	
+	private String getAbsolutePath(String pathname){
+		if("/".equals(pathname)){
+			return HOME;
+		}
+		if(!pathname.endsWith("/")){
+			return HOME+pathname+"/";
+		}
+		return HOME+pathname;
 	}
 }

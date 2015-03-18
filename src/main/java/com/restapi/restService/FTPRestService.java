@@ -9,6 +9,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -57,11 +58,10 @@ public class FTPRestService {
 		try {
 			return ftpService.listRootDirectory();
 		} catch (SocketException e) {
-			
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();			
 		} catch (IOException e) {
-			
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();			
 		}
-		return Response.status(Response.Status.NOT_FOUND).entity("Racine non trouvé").build();
 	}
 	
 	/**
@@ -75,9 +75,10 @@ public class FTPRestService {
 		try {
 			return ftpService.listDirectory(dirname);
 		} catch (SocketException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).entity("dossier "+dirname+" non trouvé").build();
 	}
 	
 	
@@ -96,9 +97,10 @@ public class FTPRestService {
 			if(filename == null)filename = "";
 			return ftpService.getFile(dirname+filename);
 		} catch (SocketException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		}
-		return Response.status(Response.Status.NOT_FOUND).entity("fichier "+filename+" non trouvé").build();
 	}
 	
 	@DELETE
@@ -109,8 +111,9 @@ public class FTPRestService {
 			if(filename == null)filename = "";
 			return ftpService.deleteFile(dirname+filename);
 		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
 		}
-		return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
+		
 	}
 	
 	@POST
@@ -118,6 +121,20 @@ public class FTPRestService {
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	@Produces({MediaType.TEXT_HTML})	
 	public Response postFile(@PathParam("dirname") String dirname,@Multipart("file") MultipartBody file){
+		try {
+			String filename = file.getRootAttachment().getDataHandler().getName();
+			InputStream fileStream = file.getRootAttachment().getDataHandler().getInputStream();
+			return ftpService.upload(dirname,fileStream,filename);
+		} catch (IOException e) {
+			return Response.status(Response.Status.BAD_GATEWAY).entity("Connexion non disponible").build();
+		}
+	}
+	
+	@PUT
+	@Path("/{dirname: .*/}")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	@Produces({MediaType.TEXT_HTML})	
+	public Response putFile(@PathParam("dirname") String dirname,@Multipart("file") MultipartBody file){
 		try {
 			String filename = file.getRootAttachment().getDataHandler().getName();
 			InputStream fileStream = file.getRootAttachment().getDataHandler().getInputStream();
