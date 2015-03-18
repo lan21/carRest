@@ -8,6 +8,9 @@ public class HTMLGenerator {
 	 */
 	private static final String DS = "/";
 	
+	/**
+	 * home link of the application
+	 */
 	private static final String HOME = "/rest/api/home/";
 	
 	
@@ -16,7 +19,7 @@ public class HTMLGenerator {
 	 * @param folderName
 	 * @return
 	 */
-	public String formatFolderNameHTML(String folderName,String workingDirectoryName){
+	private String formatFolderNameHTML(String folderName,String workingDirectoryName){
 		System.out.println("pwd:"+workingDirectoryName);
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
@@ -38,7 +41,7 @@ public class HTMLGenerator {
 	 * @param fileName
 	 * @return
 	 */
-	public String formatFileNameHTML(String fileName,String workingDirectoryName){
+	private String formatFileNameHTML(String fileName,String workingDirectoryName){
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		System.out.println("wdn=" + workingDirectoryName);
@@ -50,7 +53,7 @@ public class HTMLGenerator {
 		return intoHTML;
 	}
 	
-	public String formatFiles(FTPFile[] files,String pathname){
+	private String formatFiles(FTPFile[] files,String pathname){
 		String listFile = "<table>"
 				+ "<thead>";
 		listFile+= "<tr>"
@@ -60,20 +63,20 @@ public class HTMLGenerator {
 				+  "</tr>"
 				+ "</thead>"
 				+ "<tbody>";
-		listFile += "<td>"+formatFolderNameHTML("",pathname) +"<td/>";
-		listFile += "<td><td/>";
-		listFile += "<td><td/>";
+		listFile += "<td>"+formatFolderNameHTML("",pathname) +"</td>";
+		listFile += "<td></td>";
+		listFile += "<td></td>";
 		for (FTPFile file : files){
 			listFile += "<tr>";
 			if(file.isDirectory()){
-				listFile += "<td>"+formatFolderNameHTML(file.getName(),pathname) +"<td/>";
-				listFile += "<td><td/>";
-				listFile += "<td>"+file.getTimestamp().getTime() +"<td/>";
+				listFile += "<td>"+formatFolderNameHTML(file.getName(),pathname) +"</td>";
+				listFile += "<td></td>";
+				listFile += "<td>"+file.getTimestamp().getTime() +"</td>";
 			}
 			else{
-				listFile += "<td>"+ formatFileNameHTML(file.getName(),pathname) +"<td/>";
-				listFile += "<td>"+file.getSize()+"K<td/>";
-				listFile += "<td>"+file.getTimestamp().getTime() +"<td/>";
+				listFile += "<td>"+ formatFileNameHTML(file.getName(),pathname) +"</td>";
+				listFile += "<td>"+file.getSize()+"K</td>";
+				listFile += "<td>"+file.getTimestamp().getTime() +"</td>";
 			}
 			listFile += "</tr>";
 		}
@@ -82,6 +85,12 @@ public class HTMLGenerator {
 		return listFile;
 	}
 	
+	/**
+	 * generate an HTML pages which list the directory pathname given as parameters the files given in parameters an
+	 * @param files are the files within the directory
+	 * @param pathname is the path of the directory to be listed
+	 * @return an HTML formated string representing the directory
+	 */
 	public String HTMLPage(FTPFile[] files,String pathname){
 		String HTML = "";
 		HTML+="<html><body>";

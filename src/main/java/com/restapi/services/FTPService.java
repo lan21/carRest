@@ -12,6 +12,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.stereotype.Service;
 
+import com.restapi.exception.DirectoryNotFoundException;
+
 /**
  * sert à faire le lien entre FTPRestService et le serveur FTP auquel on se connecte
  * @author allan rakotoarivony - Tanguy Maréchal
@@ -34,55 +36,46 @@ public class FTPService {
 	
 	
 	/**
-	 * connects to an ftp and list all directories on the root of the ftp in 
+	 * connects to an ftp and list all directories on the root of the ftp in JSON
+	 * @param dirname 
 	 * @return an array of FTPFile which contains all informations about all files present in this directory
 	 * @throws SocketException
 	 * @throws IOException
+	 * @throws DirectoryNotFoundException 
 	 */
-	public FTPFile[] listDirectoryJSON() throws SocketException, IOException{
+	public FTPFile[] getFiles(String dirname) throws SocketException, IOException, DirectoryNotFoundException{
 		FTPClient client = connectToFTP();
-		FTPFile[] files = client.listFiles();
+		FTPFile[] files;
+		
+		boolean directoryFound = true;
+		if(dirname != null){
+			directoryFound = client.changeWorkingDirectory(dirname);
+		}
+		if(!directoryFound){
+			client.disconnect();
+			throw new DirectoryNotFoundException("directory "+dirname+" not found");
+		}
+		files = client.listFiles();		
+		
 		client.disconnect();
 		return files;
 	}
 	
-	/**
-	 * list the root directory using a simple HMTL format
-	 * @return a formated HTML string representing a listing of files of the root directory
-	 * @throws SocketException
-	 * @throws IOException
-	 */
-	public Response listRootDirectory() throws SocketException, IOException{
-		return listDirectory("/");
-	}
-	
+		
 	/**
 	 * List the directory specified by the pathname
 	 * @param pathname
 	 * @return a formated HTML string representing a listing of files in the directory specified by pahtname
 	 * @throws SocketException
 	 * @throws IOException
+	 * @throws DirectoryNotFoundException 
 	 */
-	public Response listDirectory(String pathname) throws SocketException, IOException{
-		FTPClient client = connectToFTP();
-		FTPFile[] files;
-		
-		boolean directoryFound = true;
-		if(pathname != null){
-			directoryFound = client.changeWorkingDirectory(pathname);
-		}
-		if(!directoryFound){
-			System.out.println("Directory not found");
-			client.disconnect();
-			return Response.status(Response.Status.NOT_FOUND).entity("directory "+pathname+" not found<br>\n").build();
-		}
-		files = client.listFiles();
+	public String listDirectory(String pathname) throws SocketException, IOException, DirectoryNotFoundException{
+		FTPFile[] files = getFiles(pathname);
 		
 		String listFile = htmlGenerator.HTMLPage(files, pathname);	
 		
-		
-		client.disconnect();
-		return Response.ok(listFile,MediaType.TEXT_HTML).build();
+		return listFile;
 	}
 	
 	
