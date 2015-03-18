@@ -1,4 +1,4 @@
-package com.tests;
+package com.restapi.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,7 +24,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.example.rs.FTPRestService;
+import com.restapi.restService.FTPRestService;
 
 public class FTPRestServiceTest {
 

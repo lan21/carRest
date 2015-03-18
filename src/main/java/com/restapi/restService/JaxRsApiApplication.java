@@ -1,4 +1,4 @@
-package com.example.rs;
+package com.restapi.restService;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

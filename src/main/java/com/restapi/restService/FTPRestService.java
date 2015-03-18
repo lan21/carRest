@@ -1,4 +1,4 @@
-package com.example.rs;
+package com.restapi.restService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +19,12 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
-import com.example.services.FTPService;
+import com.restapi.services.FTPService;
 
 /**
  * sert à executer les requêtes REST avec les verbes HTTP
  * @author Allan Rakotoarivony, Tanguy Maréchal
- * accessible à l'adresse: http://localhost:8080/ftp/api/home
+ * accessible à l'adresse: http://localhost:8080/rest/api/home
  *
  */
 @Path("/home")

@@ -1,4 +1,4 @@
-package com.example.services;
+package com.restapi.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,7 +103,7 @@ public class FTPService {
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		if(workingDirectoryName.equals("/")){
-			intoHTML += "home"+DS;
+			intoHTML += "";
 		}
 		else if(!workingDirectoryName.endsWith("/")){
 			intoHTML += workingDirectoryName+"/";
@@ -123,7 +123,7 @@ public class FTPService {
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		if(workingDirectoryName.equals("/")){
-			intoHTML += "home"+DS;
+			intoHTML += "";
 		}
 		else if(!workingDirectoryName.endsWith("/")){
 			intoHTML += workingDirectoryName+"/";

@@ -1,7 +1,6 @@
-package com.example.config;
+package com.restapi.config;
 
 import java.util.ArrayList;
-import com.example.services.FTPService;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,12 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import car.HelloWorldResource;
-
-import com.example.rs.FTPRestService;
-import com.example.rs.JaxRsApiApplication;
-import com.example.rs.PeopleRestService;
-import com.example.services.PeopleService;
+import com.restapi.restService.FTPRestService;
+import com.restapi.restService.JaxRsApiApplication;
+import com.restapi.services.FTPService;
 
 @Configuration
 public class AppConfig {	
@@ -34,8 +30,6 @@ public class AppConfig {
 		JAXRSServerFactoryBean factory = RuntimeDelegate.getInstance().createEndpoint( jaxRsApiApplication(), JAXRSServerFactoryBean.class );
 		
 		List<Object> serviceBeans = new ArrayList<Object>();
-		serviceBeans.add(peopleRestService());
-		serviceBeans.add(new HelloWorldResource());
 		serviceBeans.add(FTPRestService());
 		
 		factory.setServiceBeans(serviceBeans);
@@ -48,17 +42,7 @@ public class AppConfig {
 	public JaxRsApiApplication jaxRsApiApplication() {
 		return new JaxRsApiApplication();
 	}
-	
-	@Bean 
-	public PeopleRestService peopleRestService() {
-		return new PeopleRestService();
-	}
-	
-	@Bean 
-	public PeopleService peopleService() {
-		return new PeopleService();
-	}
-	
+
 	@Bean 
 	public FTPRestService FTPRestService() {
 		return new FTPRestService();
