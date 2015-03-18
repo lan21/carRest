@@ -14,9 +14,11 @@ Les url sont les suivantes :
 LIST : http://localhost:8080/ftp/api/home/ => liste la racine
        http://localhost:8080/ftp/api/home/dossier/ =>	liste le contenu du dossier
 
-Une fois la liste afficher, un clic sur un fichier lance le download
+Une fois la liste afficher, un clic sur un fichier lance le download.
+Un formulaire permet le dépot d'un fichier dans un dossier du serveur.
 
-Un formulaire permet le dépot ou la suppression d'un fichier sur le serveur
+Pour telecharger un fichier sans navigateur et à partir uniquement de l"URL, il faut utiliser l'URL : http://localhost:8080/ftp/api/{chemin du dossier contenantle fichier}/file/{nom du fichier} avec une requête GET.
+
 
 *** 2/ Architecture
 

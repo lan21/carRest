@@ -1,4 +1,4 @@
-package com.restapi.config;
+package com.restapi.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,11 +14,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import com.restapi.restService.FTPRestService;
-import com.restapi.restService.JaxRsApiApplication;
+import com.restapi.services.FTPRestService;
 import com.restapi.services.FTPService;
+import com.restapi.services.JaxRsApiApplication;
 
 @Configuration
+/**
+ * contains the configuration of the rest api service
+ * @author Rakotoarivony Allan - Maréchal Tanguy
+ *
+ */
 public class AppConfig {	
 	@Bean( destroyMethod = "shutdown" )
 	public SpringBus cxf() {

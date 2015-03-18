@@ -7,8 +7,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import com.restapi.config.AppConfig;
-
+/**
+ * is the main class to start the rest service
+ * @author Rakotoarivony Allan - Maréchal Tanguy
+ *
+ */
 public class Main {
 	public static void main( final String[] args ) throws Exception {
 		Server server = new Server( 8080 );

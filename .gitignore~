@@ -3,4 +3,9 @@ target/
 car-tp2.zip
 .DS_Store
 .classpath
-
+ftpServer
+help/
+lib/
+*.zip
+*~
+*.jar

@@ -1,4 +1,4 @@
-package com.restapi.restService;
+package com.restapi.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,12 +20,11 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 import com.restapi.exception.DirectoryNotFoundException;
-import com.restapi.services.FTPService;
 
 /**
- * sert à executer les requêtes REST avec les verbes HTTP
+ * handle the execution of all the REST requests
  * @author Allan Rakotoarivony, Tanguy Maréchal
- * accessible à l'adresse: http://localhost:8080/rest/api/home/
+ * The entry point of the application is : http://localhost:8080/rest/api/home/
  *
  */
 @Path("/home/")
@@ -35,7 +34,7 @@ public class FTPRestService {
 		
 	/**
 	 * is the entryPoint of the application. It lists all files in the root directory  in HTML format
-	 * @return an http response 200 and a formatted HTML which represents the files in the root if everithing goes fine
+	 * @return an http response 200 and a formatted HTML which represents the files in the root if everything goes fine
 	 * 			an http response 502 if the connexion to the ftp server failed
 	 * 			an http response 404 if the directory can't be found
 	 */
@@ -84,7 +83,6 @@ public class FTPRestService {
 	@GET
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response listRootJSON() {
-		System.out.println("FTPRestService.listRoot()");
 		try {
 			return Response.ok(ftpService.getFiles("/"),MediaType.APPLICATION_JSON).build();
 		} catch (SocketException e) {

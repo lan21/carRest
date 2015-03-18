@@ -2,6 +2,11 @@ package com.restapi.services;
 
 import org.apache.commons.net.ftp.FTPFile;
 
+/**
+ * lets to generate HTML output for requests that accepts text/html
+ * @author Rakotoarivony Allan - Maréchal Tanguy
+ *
+ */
 public class HTMLGenerator {
 	/**
 	 * directory separator
@@ -20,7 +25,6 @@ public class HTMLGenerator {
 	 * @return
 	 */
 	private String formatFolderNameHTML(String folderName,String workingDirectoryName){
-		System.out.println("pwd:"+workingDirectoryName);
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		if("".equals(folderName)){
@@ -44,7 +48,6 @@ public class HTMLGenerator {
 	private String formatFileNameHTML(String fileName,String workingDirectoryName){
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
-		System.out.println("wdn=" + workingDirectoryName);
 		intoHTML += getAbsolutePath(workingDirectoryName);
 		intoHTML += "file"+DS;
 		intoHTML += fileName+"\">";

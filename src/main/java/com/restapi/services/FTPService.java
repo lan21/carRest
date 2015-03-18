@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.restapi.exception.DirectoryNotFoundException;
 
 /**
- * sert à faire le lien entre FTPRestService et le serveur FTP auquel on se connecte
+ * is a gateway between the rest interface and the ftp server
  * @author allan rakotoarivony - Tanguy Maréchal
  *
  */
@@ -87,14 +87,13 @@ public class FTPService {
 	 * @throws IOException 
 	 */
 	public Response getFile(String filename) throws IOException {
-		System.out.println("requested file is "+filename);
 		FTPClient client = connectToFTP();
 		Response response;
 		client.setFileType(FTP.BINARY_FILE_TYPE);
 		InputStream fileInputStream = client.retrieveFileStream(filename);
 		if(fileInputStream == null){
 			System.out.println("not found");
-			response = Response.status(Response.Status.NOT_FOUND).entity("file "+filename+" not found<br>").build();
+			response = Response.status(Response.Status.NOT_FOUND).entity("file "+filename+" not found").build();
 		}else{
 			response = Response.ok(fileInputStream, MediaType.APPLICATION_OCTET_STREAM).build();
 		}		
@@ -143,14 +142,14 @@ public class FTPService {
 		}
 		if(!directoryFound){
 			client.disconnect();
-			return Response.status(Response.Status.NOT_FOUND).entity("directory "+dirname+" not found<br>\n").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("directory "+dirname+" not found").build();
 		}
 		Response response;
 		if(client.storeFile(filename, fileInputStream)){
-			response = Response.status(Response.Status.CREATED).build();
+			response = Response.status(Response.Status.CREATED).entity("File "+filename+" created in directory "+dirname).build();
 		}
 		else{
-			response = Response.status(Response.Status.FORBIDDEN).build();
+			response = Response.status(Response.Status.FORBIDDEN).entity("Not allowed to create "+filename+" in directory "+dirname).build();
 		}
 		return response;
 	}
