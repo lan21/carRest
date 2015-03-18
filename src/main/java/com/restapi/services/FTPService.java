@@ -145,6 +145,7 @@ public class FTPService {
 			return Response.status(Response.Status.NOT_FOUND).entity("directory "+dirname+" not found").build();
 		}
 		Response response;
+		client.setFileType(FTP.BINARY_FILE_TYPE);
 		if(client.storeFile(filename, fileInputStream)){
 			response = Response.status(Response.Status.CREATED).entity("File "+filename+" created in directory "+dirname).build();
 		}
