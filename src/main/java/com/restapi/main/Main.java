@@ -9,7 +9,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import com.restapi.config.AppConfig;
 
-public class Starter {
+public class Main {
 	public static void main( final String[] args ) throws Exception {
 		Server server = new Server( 8080 );
 		        
@@ -17,7 +17,7 @@ public class Starter {
  		final ServletHolder servletHolder = new ServletHolder( new CXFServlet() );
  		final ServletContextHandler context = new ServletContextHandler(); 		
  		context.setContextPath( "/" );
- 		context.addServlet( servletHolder, "/ftp/*" );
+ 		context.addServlet( servletHolder, "/rest/*" );
 
  		context.addEventListener( new ContextLoaderListener() );
  		

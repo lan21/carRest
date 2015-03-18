@@ -29,10 +29,9 @@ public class FTPService {
 	private String password = "allan";
 	
 	private static final String server = "localhost";
-	/**
-	 * directory separator
-	 */
-	private static final String DS = "/";
+	
+	private HTMLGenerator htmlGenerator = new HTMLGenerator();
+	
 	
 	/**
 	 * connects to an ftp and list all directories on the root of the ftp in 
@@ -65,9 +64,9 @@ public class FTPService {
 	 * @throws IOException
 	 */
 	public Response listDirectory(String pathname) throws SocketException, IOException{
-		//System.out.println("requested path is "+pathname);
 		FTPClient client = connectToFTP();
 		FTPFile[] files;
+		
 		boolean directoryFound = true;
 		if(pathname != null){
 			directoryFound = client.changeWorkingDirectory(pathname);
@@ -79,61 +78,14 @@ public class FTPService {
 		}
 		files = client.listFiles();
 		
-		String listFile = "";
-		for (FTPFile file : files){
-			if(file.isDirectory()){
-				listFile = listFile + formatFolderNameHTML(file.getName(),pathname) +"<br/>";
-			}
-			else{
-
-				listFile = listFile + formatFileNameHTML(file.getName(),pathname) +"<br/>";
-			}
-		}
+		String listFile = htmlGenerator.HTMLPage(files, pathname);	
+		
+		
 		client.disconnect();
 		return Response.ok(listFile,MediaType.TEXT_HTML).build();
 	}
 	
-	/**
-	 * add a link on folder name so it becomes accessible by navigation
-	 * @param folderName
-	 * @return
-	 */
-	private String formatFolderNameHTML(String folderName,String workingDirectoryName){
-		System.out.println("pwd:"+workingDirectoryName);
-		String intoHTML = "";
-		intoHTML += "<a href=\"";
-		if(workingDirectoryName.equals("/")){
-			intoHTML += "";
-		}
-		else if(!workingDirectoryName.endsWith("/")){
-			intoHTML += workingDirectoryName+"/";
-		}
-		intoHTML += folderName+DS+"\">";
-		intoHTML += folderName+DS;
-		intoHTML += "</a>";
-		return intoHTML;
-	}
 	
-	/**
-	 * add a link on a file name so it becomes accessible by navigation
-	 * @param fileName
-	 * @return
-	 */
-	private String formatFileNameHTML(String fileName,String workingDirectoryName){
-		String intoHTML = "";
-		intoHTML += "<a href=\"";
-		if(workingDirectoryName.equals("/")){
-			intoHTML += "";
-		}
-		else if(!workingDirectoryName.endsWith("/")){
-			intoHTML += workingDirectoryName+"/";
-		}
-		intoHTML += "file"+DS;
-		intoHTML += fileName+"\">";
-		intoHTML += fileName;
-		intoHTML += "</a>";
-		return intoHTML;
-	}
 
 	/**
 	 * return the requested file as a stream
@@ -146,13 +98,12 @@ public class FTPService {
 		FTPClient client = connectToFTP();
 		Response response;
 		client.setFileType(FTP.BINARY_FILE_TYPE);
-		InputStream is = client.retrieveFileStream(filename);
-		//il faut traiter si c'est un dossier
-		if(is == null){
+		InputStream fileInputStream = client.retrieveFileStream(filename);
+		if(fileInputStream == null){
 			System.out.println("not found");
 			response = Response.status(Response.Status.NOT_FOUND).entity("file "+filename+" not found<br>").build();
 		}else{
-			response = Response.ok(is, MediaType.APPLICATION_OCTET_STREAM).build();
+			response = Response.ok(fileInputStream, MediaType.APPLICATION_OCTET_STREAM).build();
 		}		
 		client.disconnect();
 		return response;

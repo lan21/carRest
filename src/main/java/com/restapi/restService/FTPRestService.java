@@ -24,10 +24,10 @@ import com.restapi.services.FTPService;
 /**
  * sert à executer les requêtes REST avec les verbes HTTP
  * @author Allan Rakotoarivony, Tanguy Maréchal
- * accessible à l'adresse: http://localhost:8080/rest/api/home
+ * accessible à l'adresse: http://localhost:8080/rest/api/home/
  *
  */
-@Path("/home")
+@Path("/home/")
 public class FTPRestService {
 	@Inject private  FTPService ftpService;
 	//private  FTPService ftpService = new FTPService(); //pour les tests
