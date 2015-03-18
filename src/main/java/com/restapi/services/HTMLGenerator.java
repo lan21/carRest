@@ -50,7 +50,7 @@ public class HTMLGenerator {
 		String intoHTML = "";
 		intoHTML += "<a href=\"";
 		System.out.println("wdn=" + workingDirectoryName);
-		if(workingDirectoryName.equals("/")){
+		if("/".equals(workingDirectoryName)){
 			intoHTML += HOME;
 		}
 		else if(!workingDirectoryName.endsWith("/")){
@@ -108,9 +108,20 @@ public class HTMLGenerator {
 	}
 	
 	public String createUploadForm(String pathname) {
-		String uploadform="<form>";
-		uploadform+="<input type=\"file\"/>";
-		uploadform+="</form>";
+		String uploadform="<form action =\"";
+		if("/".equals(pathname)){
+			uploadform += HOME;
+		}
+		else if(!pathname.endsWith("/")){
+			uploadform += HOME+pathname+"/";
+		}
+		else{
+			uploadform += HOME+pathname;
+		}
+		uploadform += "\" method=\"post\" enctype=\"multipart/form-data\">";
+		uploadform += "<input type=\"file\" name=\"file\"/>";
+		uploadform += "<input type=\"submit\" value=\"Upload file\" />";
+		uploadform += "</form>";
 		return uploadform;
 	}
 
